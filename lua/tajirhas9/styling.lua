@@ -94,15 +94,6 @@ local clients_lsp = function()
     return '\u{f085} ' .. table.concat(c, '|')
 end
 
-local muslim = require("muslim")
-muslim.setup({
-    latitude = 22.368122200492397,
-    longitude = 91.83082060378923,
-    -- timezone = 'Asia/Dhaka',
-    utc_offset = 6,
-    refresh = 5
-})
-
 require("lualine").setup({
     options = {
         theme = bubbles_theme,
@@ -116,19 +107,13 @@ require("lualine").setup({
         lualine_c = {
             { clients_lsp }
         },
-        lualine_x = { { 'datetime', style = 'default' }, { muslim.prayer_time, id = "muslim.nvim", color = { fg = colors.blue } } },
-        lualine_y = { 'filetype', 'progress' },
-        lualine_z = {
-            { 'location', separator = { right = '' }, left_padding = 2 },
-        },
+        lualine_x = { 'filetype', 'progress' },
     },
     inactive_sections = {
         lualine_a = { 'filename' },
         lualine_b = {},
         lualine_c = {},
         lualine_x = {},
-        lualine_y = {},
-        lualine_z = { 'location' },
     },
     tabline = {
         lualine_a = { { 'buffers', mode = 4, color = { fg = colors.white, bg = colors.black }, separator = { right = '' } } },
@@ -143,8 +128,7 @@ require("lualine").setup({
         lualine_b = {},
         lualine_c = {},
         lualine_x = {},
-        lualine_y = {},
-        lualine_z = {}
+        lualine_y = {}
     },
     extensions = {},
 })
