@@ -13,7 +13,6 @@ elseif vim.fn.has('nvim-0.11') == 1 then
     vim.o.diffopt = 'internal,filler,closeoff,linematch:40'
 end
 
-vim.g.mapleader = ' '
 local map = vim.api.nvim_set_keymap
 
 map('n', '<leader>pw', [[:Neotree toggle<CR>]], {})
