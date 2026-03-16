@@ -40,11 +40,4 @@ M.setup = function()
         },
     })
 end
-
-vim.api.nvim_create_autocmd({ 'BufRead', 'BufNew' }, {
-    group = require "tajirhas9.constants".load_plugins_group,
-    pattern = { '*' },
-    callback = function()
-        M.setup()
-    end
-})
+return M

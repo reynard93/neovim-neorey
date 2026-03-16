@@ -5,7 +5,7 @@ if not vim.loop.fs_stat(lazypath) then
         "clone",
         "--filter=blob:none",
         "https://github.com/folke/lazy.nvim.git",
-        "--branch=stable", -- latest stable release
+        "--branch=stable",
         lazypath,
     })
 end
@@ -18,73 +18,128 @@ require("lazy").setup({
         dependencies = {
             "williamboman/mason.nvim",
             "williamboman/mason-lspconfig.nvim",
-        }
+        },
+        config = function()
+            require("tajirhas9.mason-config").setup()
+        end,
     },
-    { "hrsh7th/nvim-cmp",                    event = "InsertEnter" },
-    { "hrsh7th/cmp-nvim-lsp",                event = "InsertEnter" },
-    { "hrsh7th/cmp-nvim-lsp-signature-help", event = "InsertEnter" },
-    { "hrsh7th/cmp-path",                    event = "InsertEnter" },
-    { "hrsh7th/cmp-buffer",                  event = "InsertEnter" },
+    {
+        "soulsam480/nvim-oxlint",
+        event = { 'BufRead', 'BufNew' },
+        dependencies = {
+            "neovim/nvim-lspconfig",
+        },
+        config = function()
+            local oxlint = require("nvim-oxlint")
+            oxlint.resolve_git_dir = function(bufnr)
+                return vim.fs.root(bufnr, { '.git', 'package.json', '.oxlintrc.json', 'oxlintrc.json' })
+                    or vim.fn.getcwd()
+            end
+            oxlint.setup({
+                run = 'onSave',
+                config_path = '.oxlintrc.json',
+                enable = true,
+                bin_path = { 'npx', 'oxlint', '--lsp' },
+                type_aware = true,
+                filetypes = {
+                    'javascript',
+                    'javascriptreact',
+                    'javascript.jsx',
+                    'typescript',
+                    'typescriptreact',
+                    'typescript.tsx',
+                    'vue',
+                },
+            })
+        end,
+    },
+    {
+        "hrsh7th/nvim-cmp",
+        event = "InsertEnter",
+        dependencies = {
+            "hrsh7th/cmp-nvim-lsp",
+            "hrsh7th/cmp-nvim-lsp-signature-help",
+            "hrsh7th/cmp-path",
+            "hrsh7th/cmp-buffer",
+        },
+        config = function()
+            require("tajirhas9.code-completion").setup()
+        end,
+    },
     {
         "nvim-neo-tree/neo-tree.nvim",
-        event = "VeryLazy",
+        cmd = "Neotree",
         dependencies = {
             "nvim-lua/plenary.nvim",
             "nvim-tree/nvim-web-devicons",
             "MunifTanjim/nui.nvim",
-            -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
-        }
+        },
+        config = function()
+            require("tajirhas9.file-explorer")
+        end,
     },
-    "nvim-lualine/lualine.nvim",
     {
-        "nvim-treesitter/nvim-treesitter", --, build = ":TSUpdate"
-        event = { 'BufRead', 'BufNew' }
+        "nvim-lualine/lualine.nvim",
+        lazy = false,
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+            "folke/tokyonight.nvim",
+        },
+        config = function()
+            require("tajirhas9.styling")
+        end,
+    },
+    {
+        "nvim-treesitter/nvim-treesitter",
+        lazy = false,
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter-context",
+            {
+                "kevinhwang91/nvim-ufo",
+                dependencies = {
+                    "kevinhwang91/promise-async",
+                },
+            },
+        },
+        config = function()
+            require("tajirhas9.syntax-highlighting").setup()
+        end,
     },
     {
         "ibhagwan/fzf-lua",
         lazy = false,
         dependencies = { "nvim-tree/nvim-web-devicons" },
+        config = function()
+            require("tajirhas9.file-finder")
+        end,
     },
     {
         'windwp/nvim-autopairs',
-        event = "InsertEnter",
-        config = true
-        -- use opts = {} for passing setup options
-        -- this is equalent to setup({}) function
+        lazy = false,
+        opts = {
+            disable_filetype = { "TelescopePrompt", "vim" },
+        },
     },
-    -- { 'akinsho/bufferline.nvim', version = "*",     dependencies = 'nvim-tree/nvim-web-devicons' },
-    -- { 'yamatsum/nvim-cursorline' },
     {
         'numToStr/Comment.nvim',
         event = { 'BufRead', 'BufNew' },
-        opts = {
-            -- add any options here
-        },
-    },
-    { "lewis6991/gitsigns.nvim", event = 'VeryLazy' },
-    { "tpope/vim-fugitive",      event = "VeryLazy" },
-    --######################
-    -- Themes
-    -- { 'projekt0n/github-nvim-theme' },
-    {
-        "folke/tokyonight.nvim",
-        lazy = false,
-        priority = 1000,
         opts = {},
     },
-    -- { "EdenEast/nightfox.nvim",     priority = 1000, config = true, opts = {} },
-    -- { "ellisonleao/gruvbox.nvim", priority = 1000,   config = true,                               opts = ... },
-    -- {
-    --     "navarasu/onedark.nvim",
-    --     dependencies = {
-    --         'nvim-tree/nvim-web-devicons'
-    --     }
-    -- },
-    --#######################
-    { "sindrets/diffview.nvim",                  event = "VeryLazy" },
+    {
+        "lewis6991/gitsigns.nvim",
+        event = 'VeryLazy',
+        config = function()
+            require("tajirhas9.git").setup()
+        end,
+    },
+    { "tpope/vim-fugitive", event = "VeryLazy" },
+    { "sindrets/diffview.nvim", event = "VeryLazy" },
     {
         "tajirhas9/nvim-colorizer.lua",
         event = { 'BufRead', 'BufNew' },
+        config = function()
+            require("colorizer").setup({ '*' })
+        end,
     },
     {
         "kkoomen/vim-doge",
@@ -98,16 +153,10 @@ require("lazy").setup({
         },
         event = "InsertEnter",
     },
-    -- {
-    --     "github/copilot.vim",
-    --     event = "InsertEnter",
-    -- },
     {
         "mbbill/undotree",
         event = { 'BufRead', 'BufNew' }
     },
-
-    -- Show current code context
     {
         "SmiteshP/nvim-navic",
         event = { 'BufRead', 'BufNew' },
@@ -115,39 +164,43 @@ require("lazy").setup({
             "neovim/nvim-lspconfig"
         }
     },
-    { "nvim-treesitter/nvim-treesitter-context", event = "VeryLazy" },
-    {
-        "kevinhwang91/nvim-ufo",
-        event = "VeryLazy",
-        dependencies = {
-            "kevinhwang91/promise-async"
-        }
-    },
-    -- flutter
     {
         'nvim-flutter/flutter-tools.nvim',
         event = { 'BufRead', 'BufNew' },
         dependencies = {
             'nvim-lua/plenary.nvim',
-            'stevearc/dressing.nvim', -- optional for vim.ui.select
+            'stevearc/dressing.nvim',
         },
-        config = true,
+        config = function()
+            require('tajirhas9.lsp.flutter').setup()
+        end,
     },
-    -- DAP
     {
         "rcarriga/nvim-dap-ui",
         event = { 'BufRead', 'BufNew' },
-        config = true,
+        config = function()
+            require("tajirhas9.debugger").setup()
+        end,
         dependencies = {
             "jay-babu/mason-nvim-dap.nvim",
             "leoluz/nvim-dap-go",
             "mfussenegger/nvim-dap-python",
+            "mfussenegger/nvim-dap",
+            "mxsdev/nvim-dap-vscode-js",
             "nvim-neotest/nvim-nio",
             "theHamsta/nvim-dap-virtual-text",
+            {
+                "microsoft/vscode-js-debug",
+                version = "1.x",
+                build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
+            },
         },
     },
     {
         "vuki656/package-info.nvim",
-        event = { 'BufRead', 'BufNew' }
+        event = { 'BufRead', 'BufNew' },
+        config = function()
+            require('package-info').setup({})
+        end,
     }
 })

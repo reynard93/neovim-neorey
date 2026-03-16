@@ -1,7 +1,15 @@
 local M = {}
+local initialized = false
 M.setup = function()
+    if initialized then
+        return
+    end
+    initialized = true
     require("mason").setup()
-    require("mason-lspconfig").setup({})
+    require("mason-lspconfig").setup({
+        ensure_installed = { "lua_ls", "vtsls", "vue_ls" },
+        automatic_installation = true,
+    })
 
 
     -- Use LspAttach autocommand to only map the following keys
@@ -45,66 +53,9 @@ M.setup = function()
         end,
     })
 
-    -- local nvim_lsp = require("lspconfig")
-    -- local mason_lspconfig = require("mason-lspconfig")
-    --
-    -- -- Show current code context
-    -- -- local navic = require("nvim-navic")
-    --
-    -- local on_attach = function(client, bufnr)
-    --     -- format on save
-    --     if client.name == "tsserver" then
-    --         vim.cmd([[command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')]]) -- Format
-    --     end
-    --     if client.supports_method("textDocument/formatting") then
-    --         vim.api.nvim_create_autocmd("BufWritePre", {
-    --             group = vim.api.nvim_create_augroup("LspFormatOnSave", { clear = true }),
-    --             buffer = bufnr,
-    --             callback = function()
-    --                 print("Formatting document on save")
-    --                 vim.lsp.buf.format { bufnr = bufnr }
-    --             end,
-    --             desc = '[lsp] format on save',
-    --         })
-    --         -- navic.attach(client, bufnr)
-    --     end
-    -- end
-    --
-    -- local capabilities = require("cmp_nvim_lsp").default_capabilities()
-    -- capabilities.textDocument.foldingRange = {
-    --     dynamicRegistration = false,
-    --     lineFoldingOnly = true
-    -- }
-
-    -- DEPRECATED
-    -- mason_lspconfig.setup_handlers({
-    --     function(server)
-    --         nvim_lsp[server].setup({
-    --             capabilities = capabilities,
-    --             on_attach = on_attach
-    --         })
-    --     end
-    -- })
-
-    vim.lsp.config('eslint', {
-        settings = {
-            enable = true,
-        },
-    })
-
     require("tajirhas9.lsp.lua_ls")
     require("tajirhas9.lsp.vtsls")
-    -- require("tajirhas9.lsp.vue_ls")
+    require("tajirhas9.lsp.vue_ls")
     require('tajirhas9.lsp.flutter')
-    -- require("tajirhas9.lsp.tsserver")
-    -- require("tajirhas9.lsp.volar")
 end
-
-
-vim.api.nvim_create_autocmd({ 'BufEnter', 'BufNew' }, {
-    group = require "tajirhas9.constants".load_plugins_group,
-    pattern = { '*' },
-    callback = function()
-        M.setup()
-    end
-})
+return M

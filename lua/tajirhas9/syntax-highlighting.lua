@@ -5,7 +5,7 @@ M.setup = function()
         require('nvim-treesitter.install').compilers = { "gcc", "clang" }
     end
 
-    require 'nvim-treesitter.configs'.setup {
+    require('nvim-treesitter').setup({
         ensure_installed = { "css", "html", "javascript", "json", "lua", "tsx", "typescript", "vue" },
         sync_install = true,
         auto_install = true,
@@ -16,7 +16,7 @@ M.setup = function()
             enable = true,
             disable = { 'vue' }, -- Add filetypes here if you want to disable folding for specific languages
         }
-    }
+    })
 
     require 'treesitter-context'.setup {
         enable = true,            -- Enable this plugin (Can be enabled/disabled later via commands)
@@ -79,13 +79,4 @@ M.setup = function()
         end
     end)
 end
-
-M.setup()
-
--- vim.api.nvim_create_autocmd({ 'FileReadPre' }, {
---     group = require("tajirhas9.constants").load_plugins_group,
---     pattern = { '*' },
---     callback = function()
---         M.setup()
---     end
--- })
+return M

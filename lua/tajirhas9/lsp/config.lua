@@ -1,17 +1,16 @@
-local mason_lspconfig = require("mason-lspconfig")
-
--- Show current code context
--- local navic = require("nvim-navic")
-
 local on_attach = function(client, bufnr)
-    -- format on save
-    if client.name == "vtsls" then
-        vim.cmd([[command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')]]) -- Format
+    if client.name == 'vtsls' then
+        vim.api.nvim_buf_create_user_command(bufnr, 'Prettier', function()
+            vim.lsp.buf.format({ bufnr = bufnr })
+        end, { desc = 'Format current buffer with LSP' })
     end
+
     if client.name == 'dartls' then
-        vim.cmd([[command! -nargs=0 DartFormat :call CocAction('runCommand', 'dart.format')]]) -- Format
+        vim.api.nvim_buf_create_user_command(bufnr, 'DartFormat', function()
+            vim.lsp.buf.format({ bufnr = bufnr })
+        end, { desc = 'Format current buffer with LSP' })
     end
-    if client.supports_method("textDocument/formatting") then
+    if client:supports_method("textDocument/formatting") then
         vim.api.nvim_create_autocmd("BufWritePre", {
             group = vim.api.nvim_create_augroup("LspFormatOnSave", { clear = true }),
             buffer = bufnr,
