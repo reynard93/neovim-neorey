@@ -40,7 +40,6 @@ M.setup = function()
             { name = 'nvim_lsp',               keyword_length = 3 },
             { name = 'nvim_lsp_signature_help' },
             { name = 'buffer',                 keyword_length = 2 },
-            { name = "codeium" }
         },
 
         -- Add borders to the windows
