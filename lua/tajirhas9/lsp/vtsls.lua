@@ -22,6 +22,9 @@ local vtsls_config = {
         on_attach(client, bufnr)
     end,
     capabilities = capabilities,
+    init_options = {
+        plugins = { vue_plugin },
+    },
     settings = {
         completions = {
             completeFunctionCalls = true
@@ -39,3 +42,21 @@ local vtsls_config = {
 
 vim.lsp.config('vtsls', vtsls_config)
 vim.lsp.enable('vtsls')
+
+-- Ensure vtsls attaches to .vue files (required for hybrid mode with vue_ls)
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'vue',
+    callback = function(args)
+        local root_dir = vim.fs.root(args.buf, { 'package.json', 'tsconfig.json', 'jsconfig.json' })
+        local client = vim.lsp.get_client_by_name('vtsls')
+        if not client then
+            vim.lsp.start({
+                name = 'vtsls',
+                cmd = { 'vtsls', '--stdio' },
+                root_dir = root_dir,
+                init_options = vtsls_config.init_options,
+                capabilities = capabilities,
+            })
+        end
+    end,
+})
