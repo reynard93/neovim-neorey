@@ -6,7 +6,6 @@ vim.o.expandtab = true       -- Pressing the TAB key will insert spaces instead 
 vim.o.softtabstop = 4        -- Number of spaces inserted instead of a TAB character
 vim.o.shiftwidth = 4         -- Number of spaces inserted when indenting
 
-
 if vim.fn.has('nvim-0.12') == 1 then
     vim.o.diffopt = 'internal,filler,closeoff,inline:word,linematch:40'
 elseif vim.fn.has('nvim-0.11') == 1 then
@@ -15,7 +14,7 @@ end
 
 local map = vim.api.nvim_set_keymap
 
-map('n', '<leader>pw', [[:Neotree toggle<CR>]], {})
+map('n', '<leader>e', [[:Neotree toggle<CR>]], {})
 
 -- jump to older cursor position
 map('n', '<M-Left>', '<C-o>', { noremap = true, silent = true })
@@ -32,6 +31,7 @@ map('n', '<C-u>', '<C-u>zz', { noremap = true, silent = true })
 -- map('n', '<C-]>', '<CMD>BufferLineCycleNext<CR>', { noremap = true, silent = true })
 map('n', '<Esc>', '<CMD><CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
+vim.opt.clipboard:append("unnamedplus")
 
 -- Delete shared directory temp files if present
 vim.api.nvim_create_autocmd({ 'VimLeavePre' }, {
