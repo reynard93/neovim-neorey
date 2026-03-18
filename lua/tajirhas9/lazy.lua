@@ -220,5 +220,28 @@ require("lazy").setup({
         config = function()
             require('package-info').setup({})
         end,
+    },
+    {
+        "akinsho/toggleterm.nvim",
+        version = "*",
+        config = function()
+            require("toggleterm").setup({
+                open_mapping = false,
+                terminal_mappings = true,
+            })
+        end,
+    },
+    {
+        "kdheepak/lazygit.nvim",
+        cmd = {
+            "LazyGit",
+            "LazyGitConfig",
+            "LazyGitCurrentFile",
+            "LazyGitFilter",
+            "LazyGitFilterCurrentFile",
+        },
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+        },
     }
 })

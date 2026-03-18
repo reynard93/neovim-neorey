@@ -12,6 +12,9 @@ elseif vim.fn.has('nvim-0.11') == 1 then
     vim.o.diffopt = 'internal,filler,closeoff,linematch:40'
 end
 
+vim.keymap.set('n', '<leader>gg', function()
+    vim.cmd('LazyGit')
+end)
 local map = vim.api.nvim_set_keymap
 
 map('n', '<leader>e', [[:Neotree toggle<CR>]], {})
